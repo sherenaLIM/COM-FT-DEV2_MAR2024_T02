@@ -1,319 +1,104 @@
-{
-    "openapi": "3.0.0",
-    "info": {
-      "title": "Expense Tracker API",
-      "description": "An API for managing user profiles and expense transactions",
-      "version": "1.0.0"
-    },
-    "servers": [
-      {
-        "url": "https://expense-tracker-api.example.com/v1"
-      }
-    ],
-    "paths": {
-      "/users/{userId}": {
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "ID of the user",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "get": {
-          "summary": "Get user profile",
-          "responses": {
-            "200": {
-              "description": "Successful operation",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/User"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "put": {
-          "summary": "Update user profile",
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Successful operation",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/User"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "delete": {
-          "summary": "Delete user profile",
-          "responses": {
-            "204": {
-              "description": "User profile deleted"
-            }
-          }
-        }
-      },
-      "/users": {
-        "post": {
-          "summary": "Create new user profile",
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "User profile created",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/User"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "get": {
-          "summary": "Get list of users",
-          "responses": {
-            "200": {
-              "description": "Successful operation",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/User"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/users/{userId}/expenses": {
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "ID of the user",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "get": {
-          "summary": "Get user's expense transactions",
-          "responses": {
-            "200": {
-              "description": "Successful operation",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Expense"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "post": {
-          "summary": "Add new expense transaction",
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Expense"
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "Expense created",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Expense"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/users/{userId}/expenses/{expenseId}": {
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "ID of the user",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "expenseId",
-            "in": "path",
-            "required": true,
-            "description": "ID of the expense transaction",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "get": {
-          "summary": "Get expense transaction details",
-          "responses": {
-            "200": {
-              "description": "Successful operation",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Expense"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "put": {
-          "summary": "Update expense transaction",
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Expense"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Successful operation",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Expense"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "delete": {
-          "summary": "Delete expense transaction",
-          "responses": {
-            "204": {
-              "description": "Expense deleted"
-            }
-          }
-        }
-      }
-    },
-    "components": {
-      "schemas": {
-        "User": {
-          "type": "object",
-          "properties": {
-            "userId": {
-              "type": "string",
-              "description": "Unique identifier for the user"
-            },
-            "username": {
-              "type": "string",
-              "description": "User's username"
-            },
-            "email": {
-              "type": "string",
-              "format": "email",
-              "description": "User's email address"
-            },
-            "fullName": {
-              "type": "string",
-              "description": "User's full name"
-            }
-          },
-          "required": [
-            "userId",
-            "username",
-            "email",
-            "fullName"
-          ]
-        },
-        "Expense": {
-          "type": "object",
-          "properties": {
-            "expenseId": {
-              "type": "string",
-              "description": "Unique identifier for the expense transaction"
-            },
-            "userId": {
-              "type": "string",
-              "description": "ID of the user who owns this expense"
-            },
-            "amount": {
-              "type": "number",
-              "format": "double",
-              "minimum": 0,
-              "description": "Amount of the expense"
-            },
-            "description": {
-              "type": "string",
-              "description": "Description of the expense"
-            },
-            "category": {
-              "type": "string",
-              "description": "Category of the expense"
-            },
-            "date": {
-              "type": "string",
-              "format": "date",
-              "description": "Date of the expense transaction"
-            }
-          },
-          "required": [
-            "expenseId",
-            "userId",
-            "amount",
-            "description",
-            "date"
-          ]
-        }
-      }
-    }
-  }
-  
+openapi: 3.0.0
+info:
+  title: Budget Tracking API
+  description: API for managing user profiles and expenses for budget tracking.
+  version: 1.0.0
+
+servers:
+  - url: https://your-budget-tracking-api.example.com
+    description: Production Server
+
+paths:
+  /user/profile:
+    get:
+      summary: Retrieve User Profile
+      description: Get details of the authenticated user's profile.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message.
+
+  /user/expenses:
+    get:
+      summary: Retrieve User Expenses
+      description: Get a list of expenses for the authenticated user.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseList'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message.
+
+components:
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Unique identifier for the user.
+        firstName:
+          type: string
+          description: User's first name.
+        lastName:
+          type: string
+          description: User's last name.
+        email:
+          type: string
+          format: email
+          description: User's email address.
+
+    Expense:
+      type: object
+      properties:
+        expenseId:
+          type: string
+          description: Unique identifier for the expense.
+        date:
+          type: string
+          format: date
+          description: Date of the expense.
+        amount:
+          type: number
+          format: float
+          description: Expense amount.
+        description:
+          type: string
+          description: Expense description.
+
+    ExpenseList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Expense'
+
+
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+        description: Error message.
