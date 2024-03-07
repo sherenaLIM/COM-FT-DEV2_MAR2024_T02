@@ -1,0 +1,106 @@
+openapi: 3.0.0
+info:
+  title: Budget Tracking API
+  description: API for managing user profiles and expenses for budget tracking.
+  version: 1.0.0
+
+servers:
+  - url: https://your-budget-tracking-api.example.com
+    description: Production Server
+
+paths:
+  /user/profile:
+    get:
+      summary: Retrieve User Profile
+      description: Get details of the authenticated user's profile.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                userId: "123456"
+                firstName: "Jane"
+                lastName: "Mary"
+                email: "mary.jane@example.com"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorized access"
+
+  /user/expenses:
+    get:
+      summary: Retrieve User Expenses
+      description: Get a list of expenses for the authenticated user.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                - transactionId: "111222"
+                  date: "2022-03-01"
+                  amount: 100.00
+                  description: "Purchase at Store A"
+                - transactionId: "333444"
+                  date: "2022-03-05"
+                  amount: -50.50
+                  description: "Withdrawal from ATM"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorized access"
+
+components:
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Unique identifier for the user.
+        firstName:
+          type: string
+          description: User's first name.
+        lastName:
+          type: string
+          description: User's last name.
+        email:
+          type: string
+          format: email
+          description: User's email address.
+
+    Expense:
+      type: object
+      properties:
+        expenseId:
+          type: string
+          description: Unique identifier for the expense.
+        date:
+          type: string
+          format: date
+          description: Date of the expense.
+        amount:
+          type: number
+          format: float
+          description: Expense amount.
+        description:
+          type: string
+          description: Expense description.
+
+    ExpenseList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Expense'
+
+
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+        description: Error message.
