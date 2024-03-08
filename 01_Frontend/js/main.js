@@ -1,5 +1,5 @@
-//let apiUrl = 'https://0f4bf6d6-9f8f-4c25-bef9-93cb98f859ee.mock.pstmn.io';
-let apiUrl = 'http://localhost:9000';
+// let apiUrl = 'https://0f4bf6d6-9f8f-4c25-bef9-93cb98f859ee.mock.pstmn.io';
+// let apiUrl = 'http://localhost:9000';
 
 function displayOutput(endpoint, data) {
   const outputDiv = document.getElementById(endpoint.toLowerCase() + 'Output');
