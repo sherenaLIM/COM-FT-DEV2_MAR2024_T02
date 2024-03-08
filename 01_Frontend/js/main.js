@@ -1,5 +1,5 @@
 // let apiUrl = 'https://0f4bf6d6-9f8f-4c25-bef9-93cb98f859ee.mock.pstmn.io';
-// let apiUrl = 'http://localhost:9000';
+let apiUrl = 'http://localhost:9000';
 
 function displayOutput(endpoint, data) {
   const outputDiv = document.getElementById(endpoint.toLowerCase() + 'Output');
@@ -30,11 +30,15 @@ function isUserAuthenticated() {
 function showContent(isUserAuthenticated, user) {
   if (isUserAuthenticated) {
     document.getElementById('isNotAuthenticatedNavbar').style.display = 'none';
+    document.getElementById('isNotAuthenticatedBody').style.display = 'none';
     document.getElementById('isAuthenticatedNavbar').style.display = 'block';  
+    document.getElementById('isAuthenticatedBody').style.display = 'block';  
     document.getElementById('userName').innerHTML = user.nickname;
   } else {
     document.getElementById('isNotAuthenticatedNavbar').style.display = 'block';
+    document.getElementById('isNotAuthenticatedBody').style.display = 'block';
     document.getElementById('isAuthenticatedNavbar').style.display = 'none';
+    document.getElementById('isAuthenticatedBody').style.display = 'none';
   }
 }
 
