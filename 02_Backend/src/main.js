@@ -26,7 +26,7 @@ const config = {
 //use cors to allow cross origin resource sharing
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'https://com-ft-dev2-mar2024-t02-1.onrender.com'],
+    origin: ['https://com-ft-dev2-mar2024-t02-1.onrender.com', 'http://localhost:3000'],
     credentials: true,
   })
 );
