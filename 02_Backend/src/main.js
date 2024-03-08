@@ -1,7 +1,11 @@
 require('dotenv').config()
-const { auth, requiresAuth } = require('express-openid-connect');
+const { auth } = require('express-openid-connect');
 const express = require('express')
 const cors = require('cors');
+
+const authController = require('./controller/auth_controller.js');
+const expensesController = require('./controller/expenses_controller.js');
+const userController = require('./controller/user_controller.js');
 
 const app = express()
 const port = process.env.PORT
@@ -14,7 +18,6 @@ const config = {
   issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
 };
 
-
 //use cors to allow cross origin resource sharing
 app.use(
   cors({
@@ -26,18 +29,9 @@ app.use(express.json());
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
 
-// req.isAuthenticated is provided from the auth router
-app.get('/', async (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-});
-
-app.get('/profile', requiresAuth(), async (req, res) => {
-  res.send(JSON.stringify(req.oidc.user));
-});
-
-app.post('/users', async (req, res) => {
-  console.log(req.body);
-})
+app.use(authController);
+app.use(expensesController);
+app.use(userController);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
