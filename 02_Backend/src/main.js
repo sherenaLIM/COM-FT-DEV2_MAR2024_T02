@@ -36,6 +36,7 @@ app.get('/profile', requiresAuth(), async (req, res) => {
 });
 
 app.post('/users', async (req, res) => {
+  console.log("New user signed up detected.");
   console.log(req.body);
 })
 
