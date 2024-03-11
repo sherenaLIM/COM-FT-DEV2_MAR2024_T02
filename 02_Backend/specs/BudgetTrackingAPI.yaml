@@ -5,64 +5,355 @@ info:
   version: 1.0.0
 
 servers:
+  - url: http://localhost:9000/api/v1
+    description: Development Server
   - url: https://your-budget-tracking-api.example.com
     description: Production Server
 
 paths:
-  /user/profile:
-    get:
-      summary: Retrieve User Profile
-      description: Get details of the authenticated user's profile.
+  /users:
+    post:
+      summary: Create user
+      description: Create a new user in the system based on the information provided from Auth0.
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUserBody'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              example:
-                userId: "123456"
-                firstName: "Jane"
-                lastName: "Mary"
-                email: "mary.jane@example.com"
-        '401':
-          description: Unauthorized
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Unable to create user successfully from Auth0.
           content:
             application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
               example:
-                message: "Unauthorized access"
-
-  /user/expenses:
+                message: "Invalid request to create user. Please check your details."        
+        '401':
+          $ref: '#/components/responses/Unauthorized'
     get:
-      summary: Retrieve User Expenses
+      summary: Retrieve all users
+      description: Get a list of all users in the system.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /users/{userId}:
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
+    get:
+      summary: Retrieve a user profile details
+      description: Get the authenticated user profile details from the system.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'        
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: User is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+              example:
+                message: "Unable to find user profile."      
+    put:
+      summary: Update a user profile details
+      description: Update the authenticated user profile details to the system.      
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserBody'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                userId: "123456"
+                authId: "auth0|6121345"
+                firstName: "Jane"
+                lastName: "Doe"
+                email: "doe.jane@example.com"
+        '400':
+          description: Unable to update user successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+              example:
+                message: "Invalid request to update user. Please check your details."        
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: User is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+              example:
+                message: "Unable to find user profile."       
+    delete:
+      summary: Delete user
+      description: Delete the authenticated user profile details from the system.      
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'         
+        '400':
+          description: Unable to delete user successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+              example:
+                message: "Invalid request to delete user. Please check your details."        
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: User is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+              example:
+                message: "Unable to find user profile."  
+  /users/{userId}/expenses:        
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
+    post:
+      summary: Create a expense
+      description: Create a new expense to the user's budgets.
+      requestBody:        
+        $ref: '#/components/requestBodies/CreateExpenseBody'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: Unable to create expense successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+              example:
+                message: "Invalid request to create an expense. Please check your details."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    get:
+      summary: Retrieve a list of user's Expenses
+      description: Get a list of expenses for the authenticated user.
+      parameters:
+        - $ref: '#/components/parameters/CategoryQueryParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expenses'            
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /users/{userId}/expenses/{expenseId}:    
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
+      - $ref: '#/components/parameters/ExpenseIdPathParam'
+    get:
+      summary: Retrieve a list of user's expenses
       description: Get a list of expenses for the authenticated user.
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              example:
-                - transactionId: "111222"
-                  date: "2022-03-01"
-                  amount: 100.00
-                  description: "Purchase at Store A"
-                - transactionId: "333444"
-                  date: "2022-03-05"
-                  amount: -50.50
-                  description: "Withdrawal from ATM"
+              schema:
+                $ref: '#/components/schemas/Expense'       
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Expenses not found
           content:
             application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
               example:
-                message: "Unauthorized access"
+                message: "Unable to find this expense."  
+    put:
+      summary: Update a expenses details
+      description: Update the details of an expenses from the authenticated user.      
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateExpenseBody'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+              example:
+                - expenseId: "111222"
+                  userId: "123456"
+                  category: "Groceries"
+                  description: "Purchase at Store A"
+                  amount: 105.00
+                  dateTime: "2022-03-01T17:32:28Z"           
+        '400':
+          description: Unable to update expense successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+              example:
+                message: "Invalid request to update an expense. Please check your details."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Expenses not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+              example:
+                message: "Unable to find this expense."  
+    delete:
+      summary: Delete an expense
+      description: Remove an expenses from the authenticated user's budget.      
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'        
+        '400':
+          description: Unable to delete expense successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+              example:
+                message: "Invalid request to delete an expense. Please check your details."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Expenses not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+              example:
+                message: "Unable to find this expense."  
 
 components:
+  parameters:
+    UserIdPathParam:       
+      in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the user.
+      example: "123456"      
+    ExpenseIdPathParam:             
+      in: path
+      name: expenseId
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the expense.
+      example: "111222"
+    CategoryQueryParam:      
+      in: query
+      name: cat
+      required: false
+      schema:
+        type: string
+      description: Expense category.
+      example: "Groceries"  
+  requestBodies:
+    CreateUserBody:      
+      description: User description from Auth0.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateUserRequest'
+    UpdateUserBody:
+      description: User description from Auth0.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateUserRequest'
+    CreateExpenseBody:
+      description: Expense description to create an expense.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateExpenseRequest'
+    UpdateExpenseBody:
+      description: Expense description to create an expense.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateExpenseRequest'
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "404"
+            message: "Unable to find this resource. Please check your parameters"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'            
+          example:
+            code: "401"
+            message: "You are not authorized to access our service."
+    BadRequest:
+      description: The specified request is invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "400"
+            message: "Invalid request. Please check your request."
   schemas:
-    UserProfile:
+    CreateUserRequest:
       type: object
       properties:
-        userId:
+        authId:
           type: string
-          description: Unique identifier for the user.
+          description: Unique identifier for the user in Auth0.
         firstName:
           type: string
           description: User's first name.
@@ -72,35 +363,170 @@ components:
         email:
           type: string
           format: email
-          description: User's email address.
-
+          description: User's email address.      
+      example:
+        authId: "auth0|6121345"
+        firstName: "Jane"
+        lastName: "Mary"
+        email: "mary.jane@example.com"
+    UpdateUserRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: User's first name.
+        lastName:
+          type: string
+          description: User's last name.
+        email:
+          type: string
+          format: email
+          description: User's email address.      
+      example:
+        firstName: "Jane"
+        lastName: "Mary"
+        email: "mary.jane@example.com"
+    CreateExpenseRequest:
+      type: object
+      properties:
+        category:
+          type: string
+          description: Expense category.
+        description:
+          type: string
+          description: Expense description.
+        amount:
+          type: number
+          format: float
+          description: Expense amount.          
+        dateTime:
+          type: string
+          format: date-time
+          description: Date of the expense.      
+      example:
+        - category: "Groceries"
+          description: "Purchase at Store A"
+          amount: 100.00
+          dateTime: "2022-03-01T17:32:28Z"
+    UpdateExpenseRequest:
+      type: object
+      properties:
+        category:
+          type: string
+          description: Expense category.
+        description:
+          type: string
+          description: Expense description.
+        amount:
+          type: number
+          format: float
+          description: Expense amount.          
+        dateTime:
+          type: string
+          format: date-time
+          description: Date of the expense.      
+      example:
+        - category: "Groceries"
+          description: "Purchase at Store A"
+          amount: 100.00
+          dateTime: "2022-03-01T17:32:28Z"
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: Unique identifier for the user.
+        authId:
+          type: string
+          description: Unique identifier for the user in Auth0.
+        firstName:
+          type: string
+          description: User's first name.
+        lastName:
+          type: string
+          description: User's last name.
+        email:
+          type: string
+          format: email
+          description: User's email address.      
+      example:
+        userId: "123456"
+        authId: "auth0|6121345"
+        firstName: "Jane"
+        lastName: "Mary"
+        email: "mary.jane@example.com"
     Expense:
       type: object
       properties:
         expenseId:
           type: string
+          format: uuid
           description: Unique identifier for the expense.
-        date:
+        userId:
           type: string
-          format: date
-          description: Date of the expense.
-        amount:
-          type: number
-          format: float
-          description: Expense amount.
+          format: uuid
+          description: Unique identifier for the user.          
+        category:
+          type: string
+          description: Expense category.
         description:
           type: string
           description: Expense description.
-
-    ExpenseList:
+        amount:
+          type: number
+          format: float
+          description: Expense amount.          
+        dateTime:
+          type: string
+          format: date-time
+          description: Date of the expense.      
+      example:
+        - expenseId: "111222"
+          userId: "123456"
+          category: "Groceries"
+          description: "Purchase at Store A"
+          amount: 100.00
+          dateTime: "2022-03-01T17:32:28Z"
+    Users:
       type: array
       items:
-        $ref: '#/components/schemas/Expense'
-
-
-  Error:
-    type: object
-    properties:
-      message:
-        type: string
-        description: Error message.
+        $ref: '#/components/schemas/Expense'      
+      example:
+        - userId: "123456"
+          authId: "auth0|6121345"
+          firstName: "Jane"
+          lastName: "Mary"
+          email: "mary.jane@example.com"                  
+        - userId: "111333"
+          authId: "auth0|6918771"
+          firstName: "John"
+          lastName: "Mary"
+          email: "mary.john@example.com"
+    Expenses:
+      type: array
+      items:
+        $ref: '#/components/schemas/Expense'      
+      example:
+        - expenseId: "111222"
+          userId: "123456"
+          category: "Groceries"
+          description: "Purchase at Store A"
+          amount: 100.00
+          dateTime: "2022-03-01T17:32:28Z"
+        - expenseId: "333444"
+          userId: "123456"
+          category: "Groceries"
+          description: "Withdrawal from ATM"
+          amount: -50.50
+          dateTime: "2022-03-05T17:32:28Z"    
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
