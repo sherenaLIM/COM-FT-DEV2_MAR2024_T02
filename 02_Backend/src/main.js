@@ -60,8 +60,8 @@ app.get('/custom_logout', (req, res) => {
 });
 
 app.use(authController);
-app.use(expensesController);
-app.use(userController);
+app.use('/api/v1', expensesController);
+app.use('/api/v1', userController);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
