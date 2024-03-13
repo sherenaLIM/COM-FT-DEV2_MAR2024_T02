@@ -6,10 +6,10 @@ const router = express.Router();
 router.post('/users', async (req, res) => {
   console.log("New user signed up detected.");
   const createUserBody = {
-    authId: req.body.user_id,
+    authId: req.body.user_id ? req.body.user_id : req.body.authId,
     email: req.body.email,
-    firstName: req.body.username,
-    lastName: req.body.username,
+    firstName: req.body.username ? req.body.username : req.body.firstName,
+    lastName: req.body.username ? req.body.username : req.body.lastName,
   }
   userService.createUser(createUserBody, (err, result) => {
     if (err) {
