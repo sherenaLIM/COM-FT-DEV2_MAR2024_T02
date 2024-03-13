@@ -20,6 +20,13 @@ function getUserExpenses() {
     .catch(error => console.error('Error fetching user expenses:', error));
 }
 
+function createUserExpenses() {
+  fetch(`${apiUrl}/user/{userid}/expenses`, {method: "POST"})
+    .then(response => response.json())
+    .then(data => displayOutput('createexp', data))
+    .catch(error => console.error('Error fetching user expenses:', error));
+}
+
 function isUserAuthenticated() {
   fetch(`${apiUrl}/verify_login`, {method: "GET", credentials: 'include' })
     .then(response => response.json())
@@ -52,4 +59,7 @@ function logoutAuth0() {
 
 window.addEventListener("load", (event) => {
   isUserAuthenticated();
-});
+})
+
+
+;
