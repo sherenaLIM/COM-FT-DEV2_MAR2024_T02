@@ -11,7 +11,12 @@ router.post('/users', async (req, res) => {
     firstName: req.body.username,
     lastName: req.body.username,
   }
-  return userService.createUser(createUserBody);
+  userService.createUser(createUserBody, (err, result) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "User creation failed!" });
+    }
+    res.status(201).send(result);
+  });
 })
 
 module.exports = router;
