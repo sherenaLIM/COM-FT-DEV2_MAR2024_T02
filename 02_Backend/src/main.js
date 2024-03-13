@@ -3,6 +3,7 @@ const { auth } = require('express-openid-connect');
 const express = require('express')
 const cors = require('cors');
 const cookie = require('cookie');
+const bodyParser = require('body-parser');
 
 const authController = require('./controller/auth_controller.js');
 const expensesController = require('./controller/expenses_controller.js');
@@ -62,6 +63,23 @@ app.get('/custom_logout', (req, res) => {
 app.use(authController);
 app.use('/api/v1', expensesController);
 app.use('/api/v1', userController);
+
+// Middleware for parsing JSON and urlencoded form data
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Define a POST route to handle form submissions
+app.post('/submit-form', (req, res) => {
+  const { cat, desc, amt, timestamp } = req.body;
+
+  // Do something with the received data
+  console.log('Category:', cat);
+  console.log('Description:', desc);
+  console.log('Amount:', amt);
+  console.log('Date & Time:', timestamp);
+  // Send a response
+  res.send('Form submitted successfully!');
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
