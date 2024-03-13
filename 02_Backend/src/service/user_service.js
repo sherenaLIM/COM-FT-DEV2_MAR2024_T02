@@ -1,15 +1,16 @@
 const db = require("../db/database.js");
 
-const createUser = (newUser) => {
-  db.query(`INSERT INTO users (authId, email, firstName, lastName) VALUES(?, ?, ?, ?)`,
-    newUser.authId, newUser.email, newUser.firstName, newUser.lastName,
-    (err, results) => {
+const createUser = (newUser, result) => {
+  db.query(`INSERT INTO tbl_user (authId, email, first_name, last_name) VALUES(?, ?, ?, ?)`,
+    [newUser.authId, newUser.email, newUser.firstName, newUser.lastName],
+    (err, res) => {
       if (err) {
-        console.log(err);
-        throw err;
+        console.log(err)
+        result(err, null)
       }
-      return results;
-    });
+      console.log(res)
+      result(null, { message: "User created successfully!" })
+  });
 }
 
 module.exports = {
