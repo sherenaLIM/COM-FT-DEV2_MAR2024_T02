@@ -133,3 +133,4 @@ dist
 .pnp.*
 
 .history
+.vscode/settings.json
