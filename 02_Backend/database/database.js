@@ -28,7 +28,9 @@ console.log("Connected to MySQL");
 }
 });
 
-mysqlConnection.query(`SELECT * from tbl_user`, (err, results) => {
+let user_id = 3;
+
+mysqlConnection.query(`SELECT * from tbl_user where id = ${user_id}`, (err, results) => {
     if (err) {
     console.log(err);
     } else {
