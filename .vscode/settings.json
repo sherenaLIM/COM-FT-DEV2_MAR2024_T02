@@ -1,3 +1,4 @@
 {
-    "liveserver.settings.port":3000
+    "liveserver.settings.port": 3000,
+    "liveServer.settings.port": 3000
 }

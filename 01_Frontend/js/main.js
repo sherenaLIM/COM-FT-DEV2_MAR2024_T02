@@ -6,11 +6,43 @@ function displayOutput(endpoint, data) {
   outputDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
 }
 
-function getUserProfile() {
-  fetch(`${apiUrl}/user/profile`, {method: "GET"})
-    .then(response => response.json())
-    .then(data => displayOutput('UserProfile', data))
-    .catch(error => console.error('Error fetching user profile:', error));
+function getUserProfile(userId) {
+  getUserById(userId)
+    .then(data => {
+      // Handle the response data here
+      console.log('User profile:', data);
+      if (data) {
+        document.getElementById('userprofileOutput').innerText = JSON.stringify(data);
+      } else {
+        console.error('Error: User data is undefined');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
+}
+
+function getUserById(userId) {
+  return fetch(`${apiUrl}/api/v1/users/${userId}`, {
+    method: 'GET',
+    credentials: 'include',
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to retrieve user profile');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Handle the response data here
+      console.log('User:', data);
+      // Log the data to see if it's correctly retrieved
+      console.log('User data:', data);
+      return data; // Return the parsed JSON data
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
 }
 
 function getUserExpenses() {
