@@ -11,8 +11,41 @@ const createUser = (newUser, result) => {
       console.log(res)
       result(null, { message: "User created successfully!" })
   });
-}
+};
+
+const getUserById = (userId, result) => {
+  db.query('SELECT * FROM tbl_user WHERE user_id = ?',
+  [userId],
+  (err, res) => {
+    if (err) {
+      console.log(err)
+      result(err, null)
+    } else {
+      if (res.length) {
+        result(null, res[0]);
+      } else {
+        result({ message: "User not found" }, null);
+      }
+    }
+  }
+  );
+};
+
+const getALLUsers = (result) => {
+  db.query('SELECT * FROM tbl_user',
+  (err, res) => {
+    if (err) {
+      console.log(err);
+      result(err, null); 
+    } else {
+      result(null, res);
+    }
+  }
+  );
+};
 
 module.exports = {
-  createUser
-}
+  createUser,
+  getUserById,
+  getALLUsers
+};
